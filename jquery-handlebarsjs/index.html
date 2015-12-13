@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title>JQuery Example</title>
+	<script src="assets/js/libs/jquery.min.js"></script>
+	<style>
+	#box{
+		border:2px solid green;
+		width:400px;
+		height:500px;
+
+	}
+	</style>
+</head>
+<body>
+<a href="javascript:void(0)" id="link">Open</a>
+<div id="box" style="display:none"></div>
+
+
+<script>
+$(document).on("ready",function(){
+	
+		
+	$("#link").on('click',function(){
+		var yo=$(this);
+		if(yo.html().toLowerCase()=="open"){
+		$("#box").slideDown(1000,function(){
+			$(this).html("<p>Javascript is a dynamic computer programming language. It is lightweight and most commonly used as a part of web pages, whose implementations allow client-side script to interact with the user and make dynamic pages. It is an interpreted programming language with object-oriented capabilities. Client-side JavaScript is the most common form of the language. The script should be included in or referenced by an HTML document for the code to be interpreted by the browser.</p><img src='assets/img/images.jpg'/> ");
+		});
+		yo.html("Close");
+	}else{
+		$("#box").slideUp(1000);
+		yo.html("Open");
+	}
+		
+	})
+});
+</script>
+</body>
+</html>

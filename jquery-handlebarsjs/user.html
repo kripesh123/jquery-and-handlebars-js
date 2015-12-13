@@ -1,0 +1,121 @@
+<html>
+<head>
+	<title>User</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/bootstrap-theme.min.css">
+	<script src="assets/js/libs/jquery.min.js"></script>
+	<script src="assets/js/libs/bootstrap.min.js"></script>
+	<script src="assets/js/libs/handlebars.js"></script>
+	<script src="assets/js/models/user.model.js"></script>
+	<script src="assets/js/services/user.service.js"></script>
+</head>
+<body>
+<div class="container">
+	<h1>User Management System</h1>
+	<div class="pull-right">
+	<p>
+	<a href="javascript:void(0)" class="btn btn-primary btn-xs" id="add-button">
+		<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add</a>
+	</p>
+	</div>
+
+	<table id="user-table" class="table table-bordered table-hover table-striped">
+			<tr>
+				<th><input type="checkbox" id="check-all"/></th>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
+	</table>
+
+			<div id="user-dialog" style="display:none">
+			<form role="form">
+				<div class="form-group">
+					<label>First Name:</label>
+					<input type="text" id="fname" name="first_name" placeholder="Enter First Name" required="required" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<label>Last Name:</label>
+					<input type="text" id="lname" name="last_name" placeholder="Enter Last Name" required="required" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<label>Email:</label>
+					<input type="email" id="email" name="email" placeholder="Enter Email" required="required" class="form-control"/>
+				</div>
+				<div class="checkbox">
+					<label><input type="checkbox" id="status"/>Status</label>
+				</div>
+				<button type="submit" class="btn btn-primary btn-sm javascript:void(0)" id="save-btn">Save</button>
+				<a href="javascript:void(0)" class="btn btn-danger btn-sm" id="cancel-btn">Cancel</a>
+			</form>
+		</div>
+
+				<script id="user-data-template" type="text/x-handlerbars-tempate">
+				{{#each users}}
+					<tr>
+						<td><input type="checkbox" class="select-all"/></td>
+						<td>{{this.id}}</td>
+						<td>{{this.firstName}} {{this.lastName}}</td>
+						<td>{{this.email}}</td>
+						<td>{{this.status}}</td>
+						<td>
+							<a href="javascript:void(0)" class="btn btn-success btn-xs" id="edit-button">
+	<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>Edit</a>
+							<a href="javascript:void(0)" class="btn btn-danger btn-xs" id="dlt-button">
+	<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Delete</a>
+						</td>
+					</tr>
+				{{/each}}
+			</script>
+
+</div>
+<script>
+var counter=1;
+var userService=new UserService();
+$(document).on('ready',function(){
+
+	$('#check-all').on("click",function(){
+		var $this=$(this);
+		$('.select-all').prop("checked",$this.is(":checked"));
+	});
+
+	$('#add-button').on("click",function(){
+		$('#user-table').hide();
+		$('#user-dialog').slideToggle();
+	});
+
+	$('#save-btn').on("click",function(){
+		var user=new User();
+		user.id=counter;
+		user.firstName=$('#fname').val();
+		user.lastName=$('#lname').val();
+		user.email=$('#email').val();
+		user.status=$('#status').is(":checked");
+		//console.log(user);
+		userService.add(user);
+		counter += 1;
+		$('#cancel-btn').click();
+		reload();
+		return false;
+	});
+
+	$('#cancel-btn').on("click",function(){
+		$('#user-dialog').slideToggle('auto',function(){
+			$('#user-table').show();
+		});
+	});
+
+});
+function reload(){
+			var source=$("#user-data-template").html();
+			var template=Handlebars.compile(source);
+			var context={users:userService.getAll()};
+			var html= template(context);
+			$("#user-table").append(html);
+		};
+
+</script>
+</body>
+</html>
